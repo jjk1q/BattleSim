@@ -6,6 +6,9 @@ public class Animation
     private bool loop;
     private double timer;
     private int currentFrame;
+    private bool finished;
+
+
 
     public Animation(int startFrame, int frameCount, double frameTime, bool loop)
     {
@@ -29,17 +32,15 @@ public class Animation
         if(currentFrame > frameCount - 1)
         {
             if(loop) currentFrame = 0;
-            else currentFrame = frameCount - 1;
+            else {currentFrame = frameCount - 1; finished = true;}
         }
     }
-    public bool IsEnded()
-    {
-        if(currentFrame == frameCount - 1 && !loop) return true;
-        return false;
-    }
+    public bool IsEnded() => finished;
+
     public void Reset()
     {
         currentFrame = 0;
         timer = 0;
+        finished = false;
     }
 }
