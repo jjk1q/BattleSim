@@ -13,9 +13,12 @@ public class Game1 : Game
     private Texture2D _dino;
     private Fighter _player1;
     private Fighter _player2;
+    private Battle battle;
     private bool _gameOver;
     private string winnerText; 
     private KeyboardState _prevKeyboard;
+     
+
 
     public Game1()
     {
@@ -37,6 +40,9 @@ public class Game1 : Game
 
         _player1 = new Fighter(new Vector2(100, 100), idle1, attack1, hurt1, SpriteEffects.None, 50);
         _player2 = new Fighter(new Vector2(400, 100), idle2, attack2, hurt2, SpriteEffects.FlipHorizontally, 50);
+
+        battle = new Battle(_player1, _player2);
+
         base.Initialize();
     }
 
@@ -61,21 +67,10 @@ public class Game1 : Game
         KeyboardState keyboard = Keyboard.GetState();
         if (!_gameOver)
         {
-            Attack(keyboard, _player1, _player2, Keys.Space);
-            Attack(keyboard, _player2, _player1, Keys.Enter);
-            if(!_player1.IsAlive())
-            {
-                _gameOver = true;
-                winnerText = "player2 won";
-            }
-            if (!_player2.IsAlive())
-            {
-                _gameOver = true;
-                winnerText = "player1 won";
-            }
-            _prevKeyboard = keyboard;
-            base.Update(gameTime);
+            Attack(keyboard);
         }
+        _prevKeyboard = keyboard;
+        base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
@@ -93,12 +88,24 @@ public class Game1 : Game
 
         base.Draw(gameTime);
     }
-    public void Attack(KeyboardState keyboard, Fighter attacker, Fighter target, Keys key)
+    public void Attack(KeyboardState keyboard)
     {
-        if (keyboard.IsKeyDown(key) && _prevKeyboard.IsKeyUp(key))
+        if (keyboard.IsKeyDown(Keys.Space) && _prevKeyboard.IsKeyUp(Keys.Space))
         {
-            attacker.Attack();
-            target.Hurt();
+            if(!_player1.IsBusy() && !_player2.IsBusy())
+            {
+                battle.Attack();
+                _gameOver = !battle.IsAlive();
+                if (!_gameOver)
+                {
+                    battle.NextRound();
+                }
+                else
+                {   
+                    if(battle.Winner() == _player1) winnerText = "Player 1 won";
+                    else winnerText = "Player 2 won";
+                }
+            }
         }
 
     }

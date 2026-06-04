@@ -7,7 +7,6 @@ public class Animation
     private double timer;
     private int currentFrame;
     private bool finished;
-    private bool whenToStart;
 
 
 

@@ -1,4 +1,5 @@
 
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -46,5 +47,10 @@ public class Fighter
     {
         spriteBatch.Draw(texture, position, new Rectangle(current.CurrentFrame * 64, 0, 64, 64),
                      Color.White, 0f, Vector2.Zero, 4f, spriteEffect, 0f);
+    }
+
+    public bool IsBusy()
+    {
+        return current != idle;
     }
 }
