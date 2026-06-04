@@ -9,9 +9,12 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private SpriteFont _font;
     private Texture2D _dino;
     private Fighter _player1;
     private Fighter _player2;
+    private bool _gameOver;
+    private string winnerText; 
     private KeyboardState _prevKeyboard;
 
     public Game1()
@@ -32,8 +35,8 @@ public class Game1 : Game
         Animation attack2 = new Animation(2, 3, 0.09, false);
         Animation hurt2 = new Animation(5, 1, 0.2, false);
 
-        _player1 = new Fighter(new Vector2(100, 100), idle1, attack1, hurt1, SpriteEffects.None);
-        _player2 = new Fighter(new Vector2(400, 100), idle2, attack2, hurt2, SpriteEffects.FlipHorizontally);
+        _player1 = new Fighter(new Vector2(100, 100), idle1, attack1, hurt1, SpriteEffects.None, 50);
+        _player2 = new Fighter(new Vector2(400, 100), idle2, attack2, hurt2, SpriteEffects.FlipHorizontally, 50);
         base.Initialize();
     }
 
@@ -42,6 +45,8 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         
         _dino = Content.Load<Texture2D>("dino");
+
+        _font = Content.Load<SpriteFont>("Font");
         
 
         
@@ -54,10 +59,23 @@ public class Game1 : Game
         _player1.Update(gameTime.ElapsedGameTime.TotalSeconds);
         _player2.Update(gameTime.ElapsedGameTime.TotalSeconds);
         KeyboardState keyboard = Keyboard.GetState();
-        Attack(keyboard, _player1,Keys.Space);
-        Attack(keyboard, _player2,Keys.Enter);
-        _prevKeyboard = keyboard;
-        base.Update(gameTime);
+        if (!_gameOver)
+        {
+            Attack(keyboard, _player1, _player2, Keys.Space);
+            Attack(keyboard, _player2, _player1, Keys.Enter);
+            if(!_player1.IsAlive())
+            {
+                _gameOver = true;
+                winnerText = "player2 won";
+            }
+            if (!_player2.IsAlive())
+            {
+                _gameOver = true;
+                winnerText = "player1 won";
+            }
+            _prevKeyboard = keyboard;
+            base.Update(gameTime);
+        }
     }
 
     protected override void Draw(GameTime gameTime)
@@ -67,14 +85,21 @@ public class Game1 : Game
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _player1.Draw(_spriteBatch, _dino);
         _player2.Draw(_spriteBatch, _dino);
+        if (_gameOver)
+        {
+            _spriteBatch.DrawString(_font, winnerText, new Vector2(50, 50), Color.White);
+        }
         _spriteBatch.End();
 
         base.Draw(gameTime);
     }
-    public void Attack(KeyboardState keyboard, Fighter player, Keys key)
+    public void Attack(KeyboardState keyboard, Fighter attacker, Fighter target, Keys key)
     {
         if (keyboard.IsKeyDown(key) && _prevKeyboard.IsKeyUp(key))
-            player.Attack();
+        {
+            attacker.Attack();
+            target.Hurt();
+        }
 
     }
 }

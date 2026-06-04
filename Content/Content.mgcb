@@ -16,3 +16,7 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:dino.png
+#begin Font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:Font.spritefont

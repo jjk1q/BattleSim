@@ -7,6 +7,7 @@ public class Animation
     private double timer;
     private int currentFrame;
     private bool finished;
+    private bool whenToStart;
 
 
 
@@ -23,6 +24,7 @@ public class Animation
     public void Update(double deltaTime)
     {
         timer += deltaTime;
+    
 
         if(timer >= frameTime)
         {
