@@ -10,6 +10,7 @@ public class Animation
 
 
 
+
     public Animation(int startFrame, int frameCount, double frameTime, bool loop)
     {
         this.startFrame = startFrame;
@@ -36,6 +37,7 @@ public class Animation
             else {currentFrame = frameCount - 1; finished = true;}
         }
     }
+    
     public bool IsEnded() => finished;
 
     public void Reset()

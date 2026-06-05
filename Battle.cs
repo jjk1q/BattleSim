@@ -40,4 +40,6 @@ class Battle
     }
 
     public Fighter Winner() => current;
+
+    public Fighter Current() => current;
 }
